@@ -1,0 +1,14 @@
+base
+ggplot2
+ggthemes
+viridis
+data.table
+descr
+reshape2
+tufte
+dplyr
+tidyr
+rmarkdown
+knitr
+scales
+pander

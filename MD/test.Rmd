@@ -1,0 +1,85 @@
+---
+title: "Untitled"
+author: "André Rodrigues"
+date: "28/04/2016"
+output: word_document
+---
+
+
+
+```{r setup, include=FALSE}
+library(tufte)
+library(ggplot2)
+library(dplyr)
+library(scales)
+library(pander)
+# invalidate cache when the tufte version changes
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
+```
+
+# 1. Os dados
+
+# 2. Item 69 do questionário para os licenciandos
+
+O questionário respondido apenas pelos estudantes de licenciatura consiste de 13 questões de múltipla escolha sobre as aspirações profissionais, o curso de licenciatura e os estágios supervisionados desenvolvidos ao longo do curso. Nesse trabalho nos concentraremos na primeira questão: _Você pretende exercer o magistério após o término do curso?_
+Com quatro alternativas: 
+
+a. Sim, como atuação profissional principal;
+a. Sim, mas esta não será a minha atuação profissional principal;
+a. Não;
+a. Ainda não decidi.
+
+# 3. Comparação entre as licenciaturas
+
+Nossa amostra conta com um total de `r nrow(lic14[qe_i69!=""])` respondentes, distribuidos nos `r nlevels(lic14$curso)` cursos de licenciatura. Os cursos de licenciatura em: **`r tolower(levels(lic14$curso))`**.
+No _gráfico 1_. podemos comparar as respostas nas diferentes licenciaturas que realizaram o exame em 2014.
+
+```{r grafico 1, echo=FALSE, fig.width = 10, fig.height = 4, fig.fullwidth = TRUE, fig.cap = "Gráfico 1. Resposta ao item 69", warning=FALSE, cache=TRUE}
+p1
+```
+As taxas dos licenciandos de Física são:
+```{r, echo=FALSE}
+kable(fis69,
+      col.names = c("Resposta", "Porcentagem"),
+      caption="Tabela 1. Resposta dos licenciados em **física**")
+```
+
+Em contra partida, o curso com menor intensão de aderir à carreira docente foi o curso de licenciatura em ciências biológicas. Onde **`r bio69[3,2]`** dos licenciandos já decidiram não seguir a carreira docente. Esse quadro pode indicar uma tendência para a área de ciências biológicas, levando no futuro à indicies de escassez de professores com formação adequada semelhantes aos da física.   
+
+```{r, echo=FALSE}
+kable(bio69,
+      col.names = c("Resposta", "Porcentagem"),
+      caption="Tabela 2. Resposta dos licenciados em **ciências biológicas**")
+```
+
+# 4. Distribuição regional
+
+O Brasil tem demandas muito distintas nas regiões geográficas sobre a necessidade de novos contigentes de professores de Física. Entender a distribuição regional e estadual do processo de adesão à carreira pode ajudar na elaboração de políticas publicas que se adequem as necessidades locais. Além disso, nos permite criar um quadro mais refinado sobre a entrada ou não na carreira docente e as implicações sobre as respectivas redes de ensino.
+
+```{r grafico 2, echo=FALSE, fig.width = 10, fig.height = 4, fig.fullwidth = TRUE, fig.cap = "Gráfico 2. Resposta ao item 69 por Região", warning=FALSE, cache=TRUE}
+p2
+```
+
+Enquanto estados como **`r tbuf_p %>% tbl_df() %>% filter(y=="c", Freq>0.10) %>% select(x) %>% unlist() `** tem mais de 10% dos licenciados afirmam não querer exercer o magistério ao fim do curso. No caso do AC esse número chega à **`r tbuf_p %>% tbl_df() %>% filter(x=="AC", y=="c") %>% select(Freq) %>% unlist() %>% percent() `**. Como podemos ver no _gráfico 3_. Em contra partida, em estados como **`r tbuf_p %>% tbl_df() %>% group_by(x) %>% filter(y==c("a","b")) %>% filter(sum(Freq)>0.8) %>% select(x) %>% distinct() %>% unlist()`** mais de 80% dos licenciados responderam _a. Sim, como atuação profissional principal_ ou _b. Sim, mas esta não será a minha atuação profissional principal_.
+
+```{r grafico 3, echo=FALSE, fig.width = 10, fig.height = 4, fig.fullwidth = TRUE, fig.cap = "Gráfico 3. Resposta ao item 69 por Unidade da Federação", warning=FALSE, cache=TRUE}
+p3
+```
+
+
+
+# 5. Distribuição por fatores diversos
+
+No **gráfico 4** encontramos as respostas separadas por sexo.
+
+```{r grafico 4, echo=FALSE, fig.width = 10, fig.height = 4, fig.fullwidth = TRUE, fig.cap = "Gráfico 3. Resposta ao item 69 por Sexo", warning=FALSE, cache=TRUE}
+p4
+```
+
+Também podemos notar que as mulheres estão incam maior indecisão, enquanto os homem indicam que querem ser exercer o megistério, mas não como profissão principal.
+
+```{r , echo=FALSE}
+kable(fsex,
+      caption="Tabela 3. Resposta ao item 69 por Sexo")
+```

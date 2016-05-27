@@ -1,0 +1,51 @@
+---
+title: "Nota de pesquisa I: Relação entre escolha profissional e estágio supervisionado"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introdução
+
+## Manipulação dos dados
+
+```{r bibliotecas}
+# Carrega bibliotecas
+library(dplyr)  # Manipulação de dados
+library(descr)  # Tabulação Cruzada
+library(plyr)   # Mudanaça de valores
+library(rmarkdown) # Escrever relatório
+library(pander)  # Escrever relatório
+```
+
+
+```{r manip}
+# Cria data frame chi com colunas do questionário para lic
+chi <- fis14 %>%
+  tbl_df() %>%
+  select(qe_i68:qe_i81)
+
+# Agrupa valores de estágio e cria coluna 73b
+chi$qe_i73b<-revalue(chi$qe_i73, c("c"="b", "d"="b", "e"="c", "f"="d"))
+```
+
+
+## Tabulação e teste
+
+```{r tab}
+c3 <- CrossTable(chi$qe_i69, chi$qe_i73b, chisq=TRUE, 
+                 expected = TRUE, format = "SPSS",
+                 dnn=c("item 69", "item 73"))
+pander(c3, caption = "Tabela Cruzada - itens 69 e 73 - querer exercer o magistério vs local de estágio")
+
+```
+
+
+## Gráfico
+
+## Considerações finais
+
+
+
