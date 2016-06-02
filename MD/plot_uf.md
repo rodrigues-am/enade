@@ -597,3 +597,44 @@ Row(%)</td>
 </tr>
 </tbody>
 </table>
+
+Relação no estado entre quem quer ser e quem não quer ser professor.
+--------------------------------------------------------------------
+
+<table style="width:96%;">
+<caption>Fitting linear model: a ~ c</caption>
+<colgroup>
+<col width="25%" />
+<col width="15%" />
+<col width="18%" />
+<col width="13%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Estimate</th>
+<th align="center">Std. Error</th>
+<th align="center">t value</th>
+<th align="center">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>c</strong></td>
+<td align="center">-1.7</td>
+<td align="center">0.32</td>
+<td align="center">-5.4</td>
+<td align="center"><em>1.411e-05</em> * * *</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>(Intercept)</strong></td>
+<td align="center">0.66</td>
+<td align="center">0.026</td>
+<td align="center">26</td>
+<td align="center"><em>1.679e-19</em> * * *</td>
+</tr>
+</tbody>
+</table>
+
+![](plot_uf_files/figure-markdown_github/lm-1.png)<!-- -->
