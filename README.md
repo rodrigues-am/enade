@@ -1,8 +1,8 @@
-README
+Enade
 ================
 
-O que é o Enade
-===============
+O que é o Enade?
+----------------
 
 O **Exame Nacional de Desempenho dos Estudantes (Enade)** faz parte do Sistema Nacional de Avaliação da Educação Superior (Sinaes) criado em 2004 e vem se consolidando na última década. O Sinaes visa uma avaliação abrangente do ensino superior nacional contemplando aspectos como a estrutura curricular, infraestrutura das Instituições de Ensino Superior e o desempenho dos alunos – ingressantes e concluintes. Mais particularmente, o Enade tem como objetivo avaliar e comparar medidas do desempenho dos estudantes em relação aos conteúdos propostos pelas diretrizes curriculares dos respectivos cursos em avaliação, e com isso as suas habilidades e competências de sua formação.
 

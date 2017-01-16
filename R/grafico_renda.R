@@ -12,7 +12,7 @@ plot(factor(renda$cu))
 
 ggrenda <- ggplot(data=as.data.frame(crossrenda$prop.col), aes(x=x, y=Freq, fill=y))+
   geom_bar(stat="identity", position = "dodge")+
-  scale_fill_manual(values=cores, name="Curso", 
+  scale_fill_manual(values=c("black", "gray50", "gray"), name="Curso", 
                     labels=c("Engenharias", "Licenciaturas", "Licenciatura em Física"))+  
   labs(x="Renda", y=NULL, title="Distribuição de \nrenda familiar total por curso")+
   theme_tufte(base_family="Helvetica")+
@@ -29,6 +29,6 @@ ggrenda <- ggplot(data=as.data.frame(crossrenda$prop.col), aes(x=x, y=Freq, fill
 
 ggrenda
 
-ggsave("p7_renda.png", path="~/R/enade/plot/", ggrenda, device="png", 
-       width=25,height=7, units="cm", dpi=350)
+ggsave("p7_renda_bw.png", path="~/R/enade/plot/", ggrenda, device="png", 
+       width=25,height=7, units="cm", dpi=300)
 
