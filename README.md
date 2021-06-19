@@ -11,3 +11,8 @@ O Enade ocorre anualmente, sendo a última vez realizada em novembro de 2015. To
 A prova é organizada pelo Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira (Inep), instituição responsável também pelo Exame Nacional de Ensino Médio (Enem). O INEP é uma autarquia federal vinculada ao Ministério da Educação(MEC). Seu objetivo é promover estudos sobre o Sistema Educacional do país, com o intuito de produzir informações confiáveis para gestores, pesquisadores, educadores e publico geral.
 
 No site do Inep são fornecidos [relatórios sínteses](http://download.inep.gov.br/educacao_superior/enade/relatorio_sintese/2014/2014_rel_fisica.pdf), provas, gabaritos, além dos microdados dos resultados dos estudantes nas avaliações, de forma anônima, mostrando quais questões cada estudante acertaram suas respostas no questionário de percepção da prova, algumas questões que revelam se o aluno já havia trabalhado na área, e qual horário ele estudou e assim por diante. Informações que serão muito úteis para essa pesquisa.
+
+## Enade 2017
+
+### Meu interesse
+Tenho interesse em criar um modelo que relacione a **decisão de ser professor** com a **experiência no estágio supervisionado**.
