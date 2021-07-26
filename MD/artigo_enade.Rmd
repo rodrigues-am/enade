@@ -1,0 +1,169 @@
+---
+title: "Carrer choice at the end of teacher education program"
+author: "André Rodrigues"
+output: html_notebook
+---
+
+
+## Pergunta de pesquisa
+
+### Objetivo da pesquisa
+
+Investigar a escolha da carreira docente em cursos de licenciatura na
+área de exatas.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr) # organizar os dados
+library(tidyr) # organizar os dados
+library(ggplot2) # produção de graficos
+library(lavaan) # sem
+library(lavaanPlot) # produção de gráficos sem
+library(mice) # multiple imputation
+library(semTools) # combinar mice e laavan
+library(huxtable)
+library(gt)
+library(gtsummary)
+# library(MVN) # checar normalidade dos dados 'Verificar'
+```
+
+```{r echo=FALSE}
+co_stem <- c("702", "1402", "1502", "1602", "4005")
+```
+
+# Verificação de valores faltantes
+
+
+# Organização das variáveis
+
+Seleção de cursos licenciatura em: _Matemática, Física, Química, Ciências Biológicas, Ciência da Computação_. 
+
+
+```{r echo=FALSE}
+
+sub17 <- e17 %>%
+  filter(CO_GRUPO %in% co_stem) %>%
+  mutate(RACA=factor(ifelse(QE_I02 == "A", 1, ifelse(QE_I02 == "", NA, 0))),
+         ESCMAE=as.numeric(QE_I05),
+         ESCMAE=ifelse(ESCMAE=="1", NA, ESCMAE),
+         RENDA=as.numeric(QE_I08),
+         RENDA=ifelse(RENDA=="1", NA, RENDA),
+         EMPUB=ifelse(QE_I17 == "A", 1, ifelse(QE_I17=="", NA, 0)),
+         BOLSA=ifelse(QE_I13 == "A", 0, ifelse(QE_I13=="", NA, 1)),
+         Q50=ifelse(QE_I50 %in% c("7", "8", ""), NA, QE_I50),
+         Q80=as.numeric(QE_I80),
+         Q80=ifelse(Q80=="1", NA, Q80),
+         Q81=as.numeric(QE_I81),
+         Q81=ifelse(Q81=="1", NA, Q81),
+         PROF=factor(ifelse(QE_I69 == "C", "No", ifelse(QE_I69 == "", NA, "Yes")))) %>%
+  select(CO_IES, CO_GRUPO, TP_SEXO, RACA, NU_IDADE, ESCMAE, RENDA, EMPUB, BOLSA, Q50, Q80, Q81, PROF) %>%
+  filter(!is.na(PROF))
+  
+```
+
+`Q50.` O estágio supervisionado proporcionou experiências diversificadas para a sua formação. 
+
+`Q80.` No decorrer do estágio curricular obrigatório, você teve suficiente orientação e supervisão de professores do seu curso?
+
+`Q81.` No decorrer do estágio curricular obrigatório, você teve adequado acompanhamento de um ou mais professores da instituição em que estagiou?
+
+# Sumário estatístico
+```{r}
+sub17 %>%
+  select(-c(Q50, Q80, Q81, CO_IES)) %>% 
+  tbl_summary(., by = PROF, 
+              label = list(CO_GRUPO ~ "Field of TEP", TP_SEXO ~"Sex", 
+                           RACA ~ "Race/ethnicity", NU_IDADE ~ "Age", ESCMAE ~ "Mother school Level",
+                           RENDA ~ "Family Income", EMPUB ~ "Public Shool", BOLSA ~ "Scholarship"),
+              statistic = list(all_continuous() ~ "{mean} ({sd})")) %>% 
+              modify_header(label ~ "**Variable**") %>%
+              modify_spanning_header(c("stat_1", "stat_2") ~ "**Wants to be a teacher**")
+# , 702 ~ "Mathematics", 1402 ~ "Physics", 1502 ~ "Chemistry", 1602 ~ "Biology", 4005 ~ "Computer Science"
+```
+## Variável de interesse:
+
+`ExP`: (Experience in the Practicum) = 
+
+`SES`: (socioeconomic status) = _Renda_ `(QE_I08)` + _Escolaridade da mãe_ `ESCMAE`
+
+
+## Variáveis de controle
+
+a. `TP_SEXO`: ok
+
+a. `RACA`: mutate 
+
+a. `QE_I02` A (*Branco*=1 e NAs) - `NU_IDADE` - `BOLSA`:
+
+a. `QE_I11` mutate A=Nenhum *SES*: - `ESCMAE`: mutate números e NAs \#Fazer
+
+a. `RENDA`: `QE_I08` mutate \#Fazer - `EMPUB`: `QE_I17` faz ensino médio
+na Publica A=1 (sim)
+
+a. Variáveis latentes: - `Q50`: `QE_I50` Questão tipo likert - `Q80`:
+a. `QE_I80` Supervisão - `Q81`: `QE_I80` Acomphamento
+
+```{r}
+result <- mvn(data= select(sub17, NU_IDADE, ESCMAE, RENDA, EMPUB, BOLSA, Q50, Q80, Q81),mvnTest="energy")
+result$multivariateNormality
+```
+
+```{r}
+test <- select(sub17, NU_IDADE, ESCMAE, RENDA, EMPUB, BOLSA, Q50, Q80, Q81) %>%
+mvn(., mvnTest="mardia")
+
+hist(sub17$RENDA)
+```
+
+# Primeiro modelo
+
+```{r}
+model <- 'EST =~ Q50 + Q80 + Q81
+          SES <~ ESCMAE + RENDA + EMPUB
+          SES ~ EST
+          SES ~~ RACA
+          PROF ~ EST + SES + TP_SEXO + RACA + NU_IDADE + BOLSA'
+```
+
+```{r}
+fit <- sem(model, data=sub17, ordered = c("PROF", "TP_SEXO", "RACA", "RENDA", "ESCMAE", "EMPUB", "BOLSA"), std.lv=TRUE)
+summary(fit, standardized=TRUE, fit.measures=TRUE)
+
+```
+
+```{r}
+lavaanPlot(fit)
+```
+
+# Primeiro modelo
+
+```{r}
+model1 <- 'EST =~ Q50 + Q80 + Q81
+          SES =~ ESCMAE + RENDA + EMPUB
+          PROF ~ EST + SES + TP_SEXO + NU_IDADE + BOLSA
+          Q80 ~~ Q81'
+```
+
+```{r}
+fit1 <- sem(model1, data=sub17, ordered = c("PROF", "TP_SEXO", "RACA", "RENDA", "ESCMAE", "EMPUB", "BOLSA"), std.lv=TRUE)
+summary(fit1, standardized=TRUE, fit.measures=TRUE)
+
+```
+
+```{r}
+semPaths(fit1, title = FALSE, "std")
+```
+
+```{r}
+reliability(fit1)
+```
+
+# Verificação
+
+```{r}
+modificationIndices(fit1, sort.=TRUE, minimum.value=3)
+```
+
+```{r}
+fit.g <- sem(model, data=sub17, std.lv=TRUE, ordered = c("PROF", "TP_SEXO", "RACA", "BOLSA"), meanstructure = TRUE, group = "CO_GRUPO")
+summary(fit.g, standardized=TRUE, fit.measures=TRUE)
+```

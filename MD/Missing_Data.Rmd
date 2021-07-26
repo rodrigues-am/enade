@@ -1,0 +1,58 @@
+---
+title: "Missing values in Enade 2017"
+output: html_notebook
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr) # organizar os dados
+library(tidyr) # organizar os dados
+library(ggplot2) # produção de graficos
+library(scales)
+library(visdat) # visualização de dados
+library(naniar) # apreciação de missing data
+```
+
+# Selecionar variáveis do modelo em sub17
+
+Para o `data.table` sub17 já estão selecionados cursos de licenciatura em: _Matemática, Física, Química, Ciências Biológicas, Ciência da Computação_.
+
+```{r}
+sub17 <- e17 %>%
+  filter(CO_GRUPO %in% co_stem) %>%
+  mutate(RACA=factor(ifelse(QE_I02 == "A", 1, ifelse(QE_I02 == "", NA, 0))),
+         ESCMAE=as.numeric(QE_I05),
+         ESCMAE=ifelse(ESCMAE=="1", NA, ESCMAE),
+         RENDA=as.numeric(QE_I08),
+         RENDA=ifelse(RENDA=="1", NA, RENDA),
+         EMPUB=ifelse(QE_I17 == "A", 1, ifelse(QE_I17=="", NA, 0)),
+         BOLSA=ifelse(QE_I13 == "A", 0, ifelse(QE_I13=="", NA, 1)),
+         Q50=ifelse(QE_I50 %in% c("7", "8", ""), NA, QE_I50),
+         Q80=as.numeric(QE_I80),
+         Q80=ifelse(Q80=="1", NA, Q80),
+         Q81=as.numeric(QE_I81),
+         Q81=ifelse(Q81=="1", NA, Q81),
+         PROF=factor(ifelse(QE_I69 == "C", "No", ifelse(QE_I69 == "", NA, "Yes")))) %>%
+  select(CO_IES, CO_GRUPO, TP_SEXO, NU_IDADE, ESCMAE, RENDA, EMPUB, BOLSA, Q50, Q80, Q81, PROF)
+```
+
+
+## Sumário Geral
+
+### Sumário
+Existe uma taxa de `r sub17 %>% summarize_all(funs(sum(is.na(.)))) %>% select(PROF) %>% .$Q50/(nrow(sub17))`
+
+```{r}
+sub17 %>%
+  summarize_all(funs(sum(is.na(.)))) %>%
+  gt()
+```
+
+
+### Visualização dos dados gerais
+
+```{r}
+sub17 %>%
+  as_tibble() %>% 
+  gg_miss_case()
+```
+
